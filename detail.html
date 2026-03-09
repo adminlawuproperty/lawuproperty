@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Detail Properti — LawuProperty</title>
+  <meta name="description" content="Detail properti LawuProperty — kawasan wisata Ngargoyoso, Karangpandan, Tawangmangu."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --forest: #1a3d2b; --pine: #2d6a45; --leaf: #4caf72;
+      --mist:   #e8f5ee; --cream: #f7f4ef; --white: #ffffff;
+      --text:   #1a1a1a; --muted: #6b7b6e; --border: #ddeae1;
+      --gold:   #b8860b;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--cream); color: var(--text); line-height: 1.65; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-thumb { background: var(--leaf); border-radius: 10px; }
+
+    /* ══ NAVBAR ══ */
+    .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 300; display: flex; align-items: center; justify-content: space-between; padding: 0 6%; height: 72px; background: rgba(255,255,255,.97); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); box-shadow: 0 2px 20px rgba(0,0,0,.06); }
+    .logo { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+    .logo-mark { width: 40px; height: 40px; border-radius: 11px; background: linear-gradient(145deg, var(--forest), var(--pine)); display: grid; place-items: center; font-family: 'Playfair Display', serif; color: #fff; font-size: 1.2rem; font-style: italic; box-shadow: 0 4px 12px rgba(26,61,43,.25); }
+    .logo-text { display: flex; flex-direction: column; line-height: 1.1; }
+    .logo-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--forest); }
+    .logo-name span { color: var(--leaf); }
+    .logo-sub { font-size: .6rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .1em; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { text-decoration: none; font-size: .87rem; font-weight: 500; color: var(--muted); transition: color .2s; }
+    .nav-links a:hover { color: var(--forest); }
+    .btn-wa { display: flex; align-items: center; gap: 7px; background: #25d366; color: #fff; padding: 9px 18px; border-radius: 9px; font-size: .82rem; font-weight: 700; text-decoration: none; transition: .2s; }
+    .btn-wa:hover { background: #1db954; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--forest); border-radius: 2px; }
+    .mobile-menu { display: none; position: fixed; top: 72px; left: 0; right: 0; z-index: 299; background: var(--white); border-bottom: 1px solid var(--border); padding: 20px 6%; flex-direction: column; gap: 4px; box-shadow: 0 12px 40px rgba(0,0,0,.1); }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { text-decoration: none; color: var(--text); font-weight: 600; font-size: .95rem; padding: 12px 0; border-bottom: 1px solid var(--border); }
+
+    /* ══ BREADCRUMB ══ */
+    .breadcrumb-wrap { margin-top: 72px; background: var(--white); border-bottom: 1px solid var(--border); padding: 14px 8%; }
+    .breadcrumb { display: flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--muted); flex-wrap: wrap; }
+    .breadcrumb a { color: var(--pine); text-decoration: none; font-weight: 600; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { opacity: .5; }
+
+    /* ══ MAIN LAYOUT ══ */
+    .detail-wrap { max-width: 1280px; margin: 0 auto; padding: 36px 5% 80px; display: grid; grid-template-columns: 1fr 360px; gap: 36px; align-items: start; }
+
+    /* ══ GALLERY ══ */
+    .gallery { margin-bottom: 32px; }
+    .gallery-main { position: relative; border-radius: 20px; overflow: hidden; aspect-ratio: 16/9; background: #e0e0e0; cursor: zoom-in; }
+    .gallery-main img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s; }
+    .gallery-main:hover img { transform: scale(1.02); }
+
+    /* ── LIGHTBOX ── */
+    .lightbox { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+    .lightbox.open { display: flex; }
+    .lb-img { max-width: 92vw; max-height: 85vh; object-fit: contain; border-radius: 10px; box-shadow: 0 8px 60px rgba(0,0,0,.5); animation: lbIn .2s ease; }
+    @keyframes lbIn { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
+    .lb-close { position: absolute; top: 20px; right: 24px; background: rgba(255,255,255,.12); border: none; color: #fff; font-size: 1.5rem; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; display: grid; place-items: center; transition: background .2s; }
+    .lb-close:hover { background: rgba(255,255,255,.25); }
+    .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,.15); border: none; color: #fff; font-size: 1.8rem; width: 52px; height: 52px; border-radius: 50%; cursor: pointer; display: grid; place-items: center; transition: background .2s; }
+    .lb-nav:hover { background: rgba(255,255,255,.3); }
+    .lb-prev { left: 20px; }
+    .lb-next { right: 20px; }
+    .lb-counter { color: rgba(255,255,255,.7); font-size: .85rem; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .gallery-badges { position: absolute; top: 16px; left: 16px; display: flex; gap: 8px; z-index: 2; }
+    .gbadge { padding: 6px 14px; border-radius: 8px; font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+    .gbadge-jual { background: var(--pine); color: #fff; }
+    .gbadge-sewa { background: #1976d2; color: #fff; }
+    .gbadge-unggulan { background: var(--gold); color: #fff; }
+    .gallery-counter { position: absolute; bottom: 14px; right: 16px; background: rgba(0,0,0,.55); backdrop-filter: blur(8px); color: #fff; padding: 5px 12px; border-radius: 20px; font-size: .75rem; font-weight: 600; }
+    .gallery-nav { position: absolute; top: 50%; transform: translateY(-50%); display: flex; justify-content: space-between; width: 100%; padding: 0 12px; pointer-events: none; }
+    .gnav-btn { pointer-events: all; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.85); border: none; cursor: pointer; font-size: 1.1rem; display: grid; place-items: center; transition: .2s; box-shadow: 0 2px 12px rgba(0,0,0,.15); }
+    .gnav-btn:hover { background: #fff; transform: scale(1.1); }
+
+    .thumbs { display: flex; gap: 10px; margin-top: 12px; overflow-x: auto; padding-bottom: 4px; }
+    .thumbs::-webkit-scrollbar { height: 4px; }
+    .thumb { flex-shrink: 0; width: 88px; height: 62px; border-radius: 10px; overflow: hidden; cursor: pointer; border: 3px solid transparent; transition: border-color .2s; }
+    .thumb.active { border-color: var(--leaf); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ══ KONTEN KIRI ══ */
+    .detail-left {}
+
+    .prop-header { margin-bottom: 28px; }
+    .prop-tipe { font-size: .72rem; font-weight: 700; color: var(--pine); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .prop-title { font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 2.5vw, 2rem); color: var(--forest); line-height: 1.25; margin-bottom: 12px; }
+    .prop-loc { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: .9rem; margin-bottom: 18px; }
+    .prop-actions { display: flex; gap: 10px; }
+    .act-btn { display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 9px; font-size: .82rem; font-weight: 600; cursor: pointer; border: 2px solid var(--border); background: var(--white); color: var(--muted); transition: .2s; font-family: 'Plus Jakarta Sans', sans-serif; }
+    .act-btn:hover { border-color: var(--pine); color: var(--pine); }
+
+    /* Specs */
+    .specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 32px; }
+    .spec-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 18px 14px; text-align: center; }
+    .spec-icon { font-size: 1.6rem; margin-bottom: 8px; }
+    .spec-val { display: block; font-size: 1.15rem; font-weight: 800; color: var(--forest); line-height: 1; margin-bottom: 5px; }
+    .spec-label { font-size: .72rem; color: var(--muted); font-weight: 500; }
+
+    /* Section blocks */
+    .block { background: var(--white); border-radius: 18px; border: 1px solid var(--border); padding: 28px; margin-bottom: 22px; }
+    .block-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--forest); margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+
+    .desc-text { color: var(--muted); font-size: .93rem; line-height: 1.85; }
+    .desc-text p { margin-bottom: 12px; }
+    .desc-text p:last-child { margin-bottom: 0; }
+
+    /* Fasilitas */
+    .fas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .fas-item { display: flex; align-items: center; gap: 9px; background: var(--mist); border-radius: 10px; padding: 11px 14px; font-size: .83rem; font-weight: 600; color: var(--forest); }
+
+    /* Tabel detail */
+    .detail-table { width: 100%; border-collapse: collapse; }
+    .detail-table tr { border-bottom: 1px solid var(--border); }
+    .detail-table tr:last-child { border-bottom: none; }
+    .detail-table td { padding: 11px 6px; font-size: .87rem; }
+    .detail-table td:first-child { color: var(--muted); width: 45%; }
+    .detail-table td:last-child { font-weight: 600; color: var(--text); }
+
+    /* Map */
+    .map-placeholder { background: var(--mist); border-radius: 12px; height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--muted); font-size: .9rem; border: 2px dashed var(--border); }
+    .map-placeholder .map-icon { font-size: 2.5rem; }
+
+    /* ══ SIDEBAR KANAN ══ */
+    .sidebar { position: sticky; top: 88px; }
+    .price-card { background: var(--white); border: 1px solid var(--border); border-radius: 20px; padding: 28px; margin-bottom: 16px; box-shadow: 0 8px 40px rgba(26,61,43,.08); }
+    .price-ket { font-size: .72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; }
+    .price-val { font-family: 'Playfair Display', serif; font-size: 1.9rem; color: var(--forest); font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+    .price-sub { font-size: .8rem; color: var(--muted); margin-bottom: 24px; }
+    .price-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; padding: 16px; background: var(--mist); border-radius: 12px; }
+    .pmeta strong { display: block; font-size: .75rem; color: var(--muted); font-weight: 500; margin-bottom: 3px; }
+    .pmeta span { font-size: .88rem; font-weight: 700; color: var(--forest); }
+    .btn-wa-main { display: flex; align-items: center; justify-content: center; gap: 10px; background: #25d366; color: #fff; padding: 15px; border-radius: 12px; font-size: .95rem; font-weight: 700; text-decoration: none; transition: .2s; margin-bottom: 10px; box-shadow: 0 6px 20px rgba(37,211,102,.3); }
+    .btn-wa-main:hover { background: #1db954; transform: translateY(-1px); }
+    .btn-call { display: flex; align-items: center; justify-content: center; gap: 10px; border: 2px solid var(--forest); color: var(--forest); padding: 13px; border-radius: 12px; font-size: .9rem; font-weight: 700; text-decoration: none; transition: .2s; }
+    .btn-call:hover { background: var(--forest); color: #fff; }
+
+    .agent-card { background: var(--white); border: 1px solid var(--border); border-radius: 20px; padding: 24px; }
+    .agent-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .agent-avatar { width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, var(--forest), var(--pine)); display: grid; place-items: center; font-size: 1.5rem; flex-shrink: 0; }
+    .agent-name { font-weight: 700; font-size: .95rem; color: var(--forest); }
+    .agent-role { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+    .agent-stats { display: flex; gap: 16px; padding: 14px; background: var(--mist); border-radius: 10px; }
+    .astat { text-align: center; flex: 1; }
+    .astat strong { display: block; font-size: 1.1rem; font-weight: 800; color: var(--forest); }
+    .astat span { font-size: .68rem; color: var(--muted); }
+
+    /* ══ PROPERTI SERUPA ══ */
+    .similar-sec { padding: 0 5% 80px; max-width: 1280px; margin: 0 auto; }
+    .similar-head { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--forest); margin-bottom: 24px; }
+    .similar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+    .scard { background: var(--white); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; transition: transform .25s, box-shadow .25s; }
+    .scard:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(26,61,43,.12); }
+    .scard-img { height: 180px; overflow: hidden; position: relative; }
+    .scard-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+    .scard:hover .scard-img img { transform: scale(1.06); }
+    .sbadge { position: absolute; top: 10px; left: 10px; padding: 4px 10px; border-radius: 6px; font-size: .68rem; font-weight: 700; }
+    .scard-body { padding: 16px; }
+    .scard-tipe { font-size: .68rem; font-weight: 700; color: var(--pine); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; }
+    .scard-title { font-weight: 700; font-size: .88rem; color: var(--text); margin-bottom: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; }
+    .scard-loc { font-size: .76rem; color: var(--muted); margin-bottom: 12px; }
+    .scard-foot { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid var(--border); }
+    .scard-price { font-weight: 800; font-size: .95rem; color: var(--forest); }
+    .scard-arrow { font-size: .8rem; color: var(--pine); font-weight: 700; }
+
+    /* Loading */
+    .loading-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 16px; }
+    .spinner { width: 44px; height: 44px; border: 4px solid var(--mist); border-top-color: var(--leaf); border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* WA Float */
+    .wa-float { position: fixed; bottom: 28px; right: 28px; z-index: 999; width: 58px; height: 58px; border-radius: 50%; background: #25d366; display: grid; place-items: center; font-size: 1.7rem; box-shadow: 0 6px 24px rgba(37,211,102,.4); text-decoration: none; animation: pulse 2.5s infinite; }
+    @keyframes pulse { 0%,100%{box-shadow:0 6px 24px rgba(37,211,102,.4)} 50%{box-shadow:0 6px 36px rgba(37,211,102,.65)} }
+
+    @media (max-width: 1024px) {
+      .detail-wrap { grid-template-columns: 1fr; }
+      .sidebar { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .specs-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .nav-links, .btn-wa { display: none; }
+      .hamburger { display: flex; }
+      .sidebar { grid-template-columns: 1fr; }
+      .fas-grid { grid-template-columns: repeat(2, 1fr); }
+      .similar-grid { grid-template-columns: 1fr; }
+      .detail-wrap { padding: 20px 4% 60px; }
+    }
+    @media (max-width: 480px) {
+      .specs-grid { grid-template-columns: repeat(2, 1fr); }
+      .prop-title { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="logo" href="index.html">
+  <img src="lawuproperty_logo.svg" alt="LawuProperty" style="height:48px; width:auto;">
+</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Beranda</a></li>
+    <li><a href="properti.html">Properti</a></li>
+    <li><a href="index.html#kontak">Kontak</a></li>
+  </ul>
+  <a class="btn-wa" href="https://wa.me/6285165844964" target="_blank">💬 WhatsApp Kami</a>
+  <button class="hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html" onclick="toggleMobile()">🏠 Beranda</a>
+  <a href="properti.html" onclick="toggleMobile()">🏡 Semua Properti</a>
+  <a href="index.html#kontak" onclick="toggleMobile()">📞 Kontak</a>
+  <a href="https://wa.me/6285165844964" target="_blank">💬 WhatsApp Kami</a>
+</div>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb-wrap">
+  <div class="breadcrumb">
+    <a href="index.html">🏠 Beranda</a>
+    <span>›</span>
+    <a href="properti.html">Properti</a>
+    <span>›</span>
+    <span id="breadTitle">Detail Properti</span>
+  </div>
+</div>
+
+<!-- LOADING STATE -->
+<div class="loading-wrap" id="loadingWrap">
+  <div class="spinner"></div>
+  <p style="color:var(--muted);font-size:.9rem">Memuat data properti...</p>
+</div>
+
+<!-- MAIN CONTENT (hidden until loaded) -->
+<div id="mainContent" style="display:none">
+
+  <!-- DETAIL WRAP -->
+  <div class="detail-wrap">
+
+    <!-- ══ KIRI ══ -->
+    <div class="detail-left">
+
+      <!-- Gallery -->
+      <div class="gallery">
+        <div class="gallery-main" id="galleryMain" onclick="openLightbox(currentImgIdx)">
+          <img id="mainImg" src="" alt="Foto Properti">
+          <div class="gallery-badges" id="galleryBadge"></div>
+          <div class="gallery-counter" id="galleryCounter">1 / 1</div>
+          <div class="gallery-nav">
+            <button class="gnav-btn" onclick="prevImg()">‹</button>
+            <button class="gnav-btn" onclick="nextImg()">›</button>
+          </div>
+        </div>
+        <div class="thumbs" id="thumbsWrap"></div>
+      </div>
+
+      <!-- Header -->
+      <div class="prop-header">
+        <div class="prop-tipe" id="propTipe"></div>
+        <h1 class="prop-title" id="propTitle"></h1>
+        <div class="prop-loc" id="propLoc"></div>
+        <div class="prop-actions">
+          <button class="act-btn" onclick="toggleFav(this)">🤍 Simpan</button>
+          <button class="act-btn" onclick="shareProperty()">🔗 Bagikan</button>
+          <a class="act-btn" href="properti.html" style="text-decoration:none">← Kembali</a>
+        </div>
+      </div>
+
+      <!-- Specs -->
+      <div class="specs-grid" id="specsGrid"></div>
+
+      <!-- Deskripsi -->
+      <div class="block">
+        <div class="block-title">📝 Deskripsi Properti</div>
+        <div class="desc-text" id="descText"></div>
+      </div>
+
+      <!-- Fasilitas -->
+      <div class="block">
+        <div class="block-title">✨ Fasilitas & Keunggulan</div>
+        <div class="fas-grid" id="fasGrid"></div>
+      </div>
+
+      <!-- Detail Tabel -->
+      <div class="block">
+        <div class="block-title">📋 Informasi Lengkap</div>
+        <table class="detail-table" id="detailTable"></table>
+      </div>
+
+      <!-- Peta / Lokasi -->
+      <div class="block">
+        <div class="block-title">📍 Lokasi</div>
+        <div class="map-placeholder">
+          <div class="map-icon">🗺️</div>
+          <div id="mapLabel" style="font-weight:600;color:var(--forest)"></div>
+          <div style="font-size:.8rem">Hubungi kami untuk detail lokasi dan survei</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ SIDEBAR KANAN ══ -->
+    <div class="sidebar">
+
+      <!-- Harga -->
+      <div class="price-card">
+        <div class="price-ket" id="priceKet">Harga</div>
+        <div class="price-val" id="priceVal"></div>
+        <div class="price-sub" id="priceSub"></div>
+        <div class="price-meta">
+          <div class="pmeta">
+            <strong>Kode Properti</strong>
+            <span id="propKode"></span>
+          </div>
+          <div class="pmeta">
+            <strong>Status</strong>
+            <span id="propStatus"></span>
+          </div>
+          <div class="pmeta">
+            <strong>Tipe</strong>
+            <span id="propTipeInfo"></span>
+          </div>
+          <div class="pmeta">
+            <strong>Sertifikat</strong>
+            <span id="propSertifikat"></span>
+          </div>
+        </div>
+        <a class="btn-wa-main" id="waBtn" href="#" target="_blank">
+          💬 Tanya via WhatsApp
+        </a>
+        <a class="btn-call" href="tel:+6285165844964">
+          📞 0851-6584-4964
+        </a>
+      </div>
+
+      <!-- Agent -->
+      <div class="agent-card">
+        <div class="agent-head">
+          <img src="lawuproperty_logo_rumah.svg" alt="LP" style="width:32px; height:auto;">
+          <div>
+            <div class="agent-name">LawuProperty</div>
+            <div class="agent-role">Agen Properti Kawasan Lawu</div>
+          </div>
+        </div>
+        <div class="agent-stats">
+          <div class="astat"><strong>100+</strong><span>Listing Terjual</span></div>
+          <div class="astat"><strong>10+</strong><span>Tahun</span></div>
+          <div class="astat"><strong>4.9★</strong><span>Rating</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PROPERTI SERUPA -->
+  <div class="similar-sec">
+    <div class="similar-head">Properti Serupa</div>
+    <div class="similar-grid" id="similarGrid"></div>
+  </div>
+
+</div><!-- end mainContent -->
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lb-close" onclick="event.stopPropagation(); closeLightbox()">✕</button>
+  <button class="lb-nav lb-prev" onclick="event.stopPropagation(); switchLightbox(currentImgIdx - 1)">‹</button>
+  <button class="lb-nav lb-next" onclick="event.stopPropagation(); switchLightbox(currentImgIdx + 1)">›</button>
+  <img class="lb-img" id="lbImg" src="" onclick="event.stopPropagation()">
+  <div class="lb-counter" id="lbCounter"></div>
+</div>
+
+<a class="wa-float" href="https://wa.me/6285165844964" target="_blank">💬</a>
+
+<script src="data.js"></script>
+<script>
+  let allProps = [];
+  let currentImgIdx = 0;
+  let currentImgs = [];
+
+  const fasilitasMap = {
+    Rumah:  ['🛁 Kamar Mandi Dalam','🚗 Garasi','💡 Listrik PLN','💧 Air Bersih','📶 Siap WiFi','🌿 Halaman','🔒 Keamanan','🏔️ View Pegunungan'],
+    Tanah:  ['📜 Sertifikat SHM','🛣️ Akses Jalan','💡 Listrik Tersedia','💧 Sumber Air','🌳 Lingkungan Asri','📐 Kontur Datar','🌄 View Alam','🏘️ Kawasan Berkembang'],
+    Villa:  ['🏊 Private Pool','🌄 View Gunung Lawu','🚗 Garasi','💡 Listrik PLN','❄️ AC Seluruh Ruangan','🍳 Dapur Lengkap','🛁 Bathup','🌿 Taman Privat'],
+    Kebun:  ['🌿 Lahan Produktif','💧 Sumber Air/Irigasi','📜 Sertifikat Jelas','🛣️ Akses Jalan','🌳 Lingkungan Hijau','🏔️ Udara Segar','🌱 Tanah Subur','☀️ Paparan Sinar Matahari Optimal'],
+    Default:['💡 Listrik PLN','💧 Air Bersih','📜 Legalitas Jelas','📍 Lokasi Strategis','🌿 Kawasan Wisata Lawu','🤝 Agen Terpercaya']
+  };
+
+  const descMap = {
+    Rumah: p => `<p>Properti ini menawarkan hunian yang nyaman dan asri di ${p.lokasi}. Dikelilingi alam pegunungan kawasan Lawu yang sejuk, rumah ini cocok untuk keluarga yang mendambakan ketenangan di tengah keindahan alam.</p><p>Dengan luas tanah ${p.lt}m²${p.lb!=="0"?` dan luas bangunan ${p.lb}m²`:''}, tersedia ${p.kt} kamar tidur dan ${p.km} kamar mandi. Kondisi ${p.kondisi||'siap huni'} dengan sertifikat ${p.sertifikat||'SHM'} yang jelas.</p><p>Lokasi di kawasan wisata Ngargoyoso-Karangpandan-Tawangmangu memberikan nilai investasi yang terus meningkat. Hubungi LawuProperty sekarang untuk informasi lengkap dan jadwal survei gratis.</p>`,
+    Tanah:  p => `<p>Lahan strategis ini terletak di ${p.lokasi}, kawasan wisata lereng Gunung Lawu yang terus berkembang pesat. Cocok untuk investasi, pembangunan villa, homestay, maupun hunian pribadi.</p><p>Luas tanah ${p.lt}m² dengan sertifikat ${p.sertifikat||'SHM'}, kondisi ${p.kondisi||'tanah kosong'}. Kawasan ini dikenal dengan udara sejuk, pemandangan alam indah, dan potensi pariwisata yang tinggi.</p><p>Harga tanah di kawasan Lawu terus meningkat seiring pertumbuhan wisata. Ini adalah kesempatan investasi yang sayang untuk dilewatkan. Hubungi kami untuk survei lokasi.</p>`,
+    Villa:  p => `<p>Villa eksklusif ini berlokasi di ${p.lokasi} dengan pemandangan alam Gunung Lawu yang memukau. Ideal sebagai hunian premium, villa liburan, maupun properti investasi dengan potensi sewa yang tinggi.</p><p>Luas tanah ${p.lt}m² dan bangunan ${p.lb!=="0"?p.lb+'m²':'yang luas'}, terdiri dari ${p.kt} kamar tidur dan ${p.km} kamar mandi. Fasilitas lengkap dengan desain yang memadukan kemewahan modern dan nuansa alam pegunungan.</p><p>Kawasan Tawangmangu dan Kemuning menjadi destinasi wisata favorit — villa di sini selalu diminati untuk sewa harian maupun tahunan. Hubungi kami untuk informasi lengkap.</p>`,
+    Kebun:  p => `<p>Lahan kebun/pertanian produktif ini berlokasi di ${p.lokasi}, kawasan agraris subur di lereng Gunung Lawu. Tanah dengan luas ${p.lt}m² ini cocok untuk perkebunan, pertanian organik, maupun wisata agro.</p><p>Kondisi lahan ${p.kondisi||'produktif'} dengan sertifikat ${p.sertifikat||'SHM'} yang jelas. Didukung dengan sumber air yang baik dan iklim sejuk yang cocok untuk berbagai jenis tanaman.</p><p>Potensi wisata agro di kawasan Kemuning-Ngargoyoso terus berkembang. Ini adalah investasi yang menjanjikan untuk jangka panjang. Hubungi kami untuk survei dan informasi lebih lanjut.</p>`,
+    Default:p => `<p>Properti ini berlokasi di ${p.lokasi}, kawasan wisata lereng Gunung Lawu. ${p.status==='jual'?'Dijual':'Disewakan'} dengan kondisi ${p.kondisi||'baik'} dan sertifikat ${p.sertifikat||'SHM'}.</p><p>Hubungi LawuProperty untuk informasi lengkap dan jadwal survei gratis.</p>`
+  };
+
+  function toggleMobile() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  function openLightbox(idx) {
+    if (!currentImgs.length) return;
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    switchLightbox(idx);
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function switchLightbox(idx) {
+    currentImgIdx = (idx + currentImgs.length) % currentImgs.length;
+    document.getElementById('lbImg').src = currentImgs[currentImgIdx];
+    document.getElementById('lbCounter').textContent = `${currentImgIdx + 1} / ${currentImgs.length}`;
+    document.getElementById('mainImg').src = currentImgs[currentImgIdx];
+    document.getElementById('galleryCounter').textContent = `${currentImgIdx + 1} / ${currentImgs.length}`;
+    document.querySelectorAll('.thumb').forEach((t, i) => t.classList.toggle('active', i === currentImgIdx));
+  }
+
+  function switchImg(idx) {
+    if (!currentImgs.length) return;
+    currentImgIdx = (idx + currentImgs.length) % currentImgs.length;
+    document.getElementById('mainImg').src = currentImgs[currentImgIdx];
+    document.getElementById('galleryCounter').textContent = `${currentImgIdx+1} / ${currentImgs.length}`;
+    document.querySelectorAll('.thumb').forEach((t,i) => t.classList.toggle('active', i===currentImgIdx));
+  }
+  function prevImg() { switchImg(currentImgIdx - 1); }
+  function nextImg() { switchImg(currentImgIdx + 1); }
+
+  function toggleFav(btn) {
+    const saved = btn.textContent.includes('🤍');
+    btn.innerHTML = saved ? '❤️ Tersimpan' : '🤍 Simpan';
+  }
+
+  function shareProperty() {
+    if (navigator.share) {
+      navigator.share({ title: document.title, url: window.location.href });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link properti telah disalin! 📋');
+    }
+  }
+
+  function renderDetail(p) {
+    document.title = `${p.nama} — LawuProperty`;
+    document.getElementById('breadTitle').textContent = p.tipe + ' · ' + p.wilayah;
+
+    // Gallery
+    currentImgs = (p.imgs && p.imgs.length > 0) ? p.imgs : [p.img || 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=900'];
+    currentImgIdx = 0;
+    document.getElementById('mainImg').src = currentImgs[0];
+    document.getElementById('galleryCounter').textContent = `1 / ${currentImgs.length}`;
+
+    // Nav buttons visibility
+    const navBtns = document.querySelectorAll('.gnav-btn');
+    navBtns.forEach(b => b.style.display = currentImgs.length > 1 ? 'grid' : 'none');
+
+    // Thumbs
+    document.getElementById('thumbsWrap').innerHTML = currentImgs.length > 1
+      ? currentImgs.map((src, i) => `<div class="thumb ${i===0?'active':''}" onclick="switchImg(${i})"><img src="${src}" alt="Foto ${i+1}" loading="lazy"></div>`).join('')
+      : '';
+
+    // Badges
+    document.getElementById('galleryBadge').innerHTML =
+      `<span class="gbadge ${p.status==='jual'?'gbadge-jual':'gbadge-sewa'}">${p.status==='jual'?'Dijual':'Disewa'}</span>
+      ${p.unggulan ? '<span class="gbadge gbadge-unggulan">⭐ Unggulan</span>' : ''}`;
+
+    // Header
+    const icons = { Rumah:'🏠', Tanah:'🌿', Villa:'🏡', Kebun:'🌱', Ruko:'🏪', Kost:'🛏', Default:'🏘️' };
+    document.getElementById('propTipe').innerHTML = `${icons[p.tipe]||icons.Default} ${p.tipe} &nbsp;·&nbsp; ${p.wilayah}`;
+    document.getElementById('propTitle').textContent = p.nama;
+    document.getElementById('propLoc').innerHTML = `📍 ${p.lokasi}`;
+
+    // Specs
+    const specs = [];
+    if (p.kt > 0) specs.push({ icon:'🛏', val: p.kt, label:'Kamar Tidur' });
+    if (p.km > 0) specs.push({ icon:'🚿', val: p.km, label:'Kamar Mandi' });
+    if (p.lt !== "0" && p.lt !== "0") specs.push({ icon:'📐', val: p.lt+'m²', label:'Luas Tanah' });
+    if (p.lb !== "0") specs.push({ icon:'🏠', val: p.lb+'m²', label:'Luas Bangunan' });
+    if (specs.length > 0) {
+      document.getElementById('specsGrid').innerHTML = specs.map(s =>
+        `<div class="spec-card"><div class="spec-icon">${s.icon}</div><span class="spec-val">${s.val}</span><span class="spec-label">${s.label}</span></div>`
+      ).join('');
+    } else {
+      document.getElementById('specsGrid').style.display = 'none';
+    }
+
+    // Deskripsi
+    const descFn = descMap[p.tipe] || descMap.Default;
+    document.getElementById('descText').innerHTML = descFn(p);
+
+    // Fasilitas
+    const fas = fasilitasMap[p.tipe] || fasilitasMap.Default;
+    document.getElementById('fasGrid').innerHTML = fas.map(f => {
+      const parts = f.split(' ');
+      return `<div class="fas-item">${parts[0]} ${parts.slice(1).join(' ')}</div>`;
+    }).join('');
+
+    // Detail table
+    const rows = [
+      ['Status', p.status === 'jual' ? '🟢 Dijual' : '🔵 Disewa'],
+      ['Tipe Properti', p.tipe],
+      ['Wilayah', p.wilayah],
+      ['Lokasi', p.lokasi],
+      ['Sertifikat', p.sertifikat || 'SHM'],
+      ['Kondisi', p.kondisi || 'Siap Huni'],
+      ['Luas Tanah', p.lt !== "0" ? p.lt + ' m²' : '-'],
+      ['Luas Bangunan', p.lb !== "0" ? p.lb + ' m²' : '-'],
+      ['Kamar Tidur', p.kt > 0 ? p.kt : '-'],
+      ['Kamar Mandi', p.km > 0 ? p.km : '-'],
+      ['Garasi', p.garasi || '-'],
+      ['Listrik', p.listrik || '-'],
+      ['Air', p.air || '-'],
+    ];
+    document.getElementById('detailTable').innerHTML = rows.map(r =>
+      `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+
+    document.getElementById('mapLabel').textContent = p.lokasi;
+
+    // Sidebar harga
+    document.getElementById('priceKet').textContent = p.hargaKet || 'Harga';
+    document.getElementById('priceVal').textContent = p.hargaLabel;
+    document.getElementById('priceSub').textContent = p.status === 'sewa' ? 'Harga dapat dinegosiasikan' : 'Harga bisa nego';
+    document.getElementById('propKode').textContent = `#LP${String(p.id).padStart(3,'0')}`;
+    document.getElementById('propStatus').textContent = '✅ Tersedia';
+    document.getElementById('propTipeInfo').textContent = p.tipe;
+    document.getElementById('propSertifikat').textContent = p.sertifikat || 'SHM';
+
+    // WA button
+    const teks = encodeURIComponent(`Halo LawuProperty!\n\nSaya tertarik dengan properti berikut:\n📌 ${p.nama}\n📍 ${p.lokasi}\n💰 ${p.hargaLabel}\n🔖 Kode: #LP${String(p.id).padStart(3,'0')}\n\nMohon informasi lebih lanjut. Terima kasih!`);
+    document.getElementById('waBtn').href = `https://wa.me/6285165844964?text=${teks}`;
+  }
+
+  function renderSimilar(current) {
+    const similar = allProps
+      .filter(p => p.id !== current.id && (p.tipe === current.tipe || p.wilayah === current.wilayah))
+      .slice(0, 3);
+
+    if (similar.length === 0) {
+      document.querySelector('.similar-sec').style.display = 'none';
+      return;
+    }
+
+    const icons = { Rumah:'🏠', Tanah:'🌿', Villa:'🏡', Kebun:'🌱', Default:'🏘️' };
+    document.getElementById('similarGrid').innerHTML = similar.map(p => `
+      <div class="scard" onclick="location.href='detail.html?id=${p.id}'">
+        <div class="scard-img">
+          <img src="${p.img}" alt="${p.tipe}" loading="lazy">
+          <span class="sbadge ${p.status==='jual'?'gbadge-jual':'gbadge-sewa'}" style="padding:4px 10px;border-radius:6px;font-size:.68rem;font-weight:700;">${p.status==='jual'?'Dijual':'Disewa'}</span>
+        </div>
+        <div class="scard-body">
+          <div class="scard-tipe">${icons[p.tipe]||icons.Default} ${p.tipe} · ${p.wilayah}</div>
+          <div class="scard-title">${p.nama}</div>
+          <div class="scard-loc">📍 ${p.lokasi}</div>
+          <div class="scard-foot">
+            <span class="scard-price">${p.hargaLabel}</span>
+            <span class="scard-arrow">Lihat →</span>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  // Navigasi keyboard untuk lightbox
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'ArrowRight') switchLightbox(currentImgIdx + 1);
+    if (e.key === 'ArrowLeft')  switchLightbox(currentImgIdx - 1);
+    if (e.key === 'Escape')     closeLightbox();
+  });
+
+  // ── INIT ──
+  loadProperties().then(data => {
+    allProps = data;
+    const id = parseInt(new URLSearchParams(window.location.search).get('id')) || 1;
+    const p = allProps.find(x => x.id === id) || allProps[0];
+
+    if (!p) {
+      document.getElementById('loadingWrap').innerHTML = `<div style="text-align:center;padding:60px"><div style="font-size:3rem;margin-bottom:12px">🏠</div><p style="color:var(--muted)">Properti tidak ditemukan.</p><a href="properti.html" style="color:var(--pine);font-weight:700">← Kembali ke daftar</a></div>`;
+      return;
+    }
+
+    renderDetail(p);
+    renderSimilar(p);
+
+    document.getElementById('loadingWrap').style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+  });
+</script>
+</body>
+</html>
